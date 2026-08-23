@@ -13,19 +13,23 @@ export default function Step3Field() {
 
   if (!currentDraft) return null;
 
-  const handleGetLocation = () => {
+  const handleGetLocation = (type: 'departure' | 'arrival') => {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
-          updateField('locationCoordinates', { lat, lng });
+          
+          const coordsField = type === 'departure' ? 'departureCoordinates' : 'locationCoordinates';
+          const nameField = type === 'departure' ? 'departureLocation' : 'location';
+          
+          updateField(coordsField, { lat, lng });
           
           try {
             const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
             const data = await res.json();
             if (data && data.display_name) {
-              updateField('location', data.display_name);
+              updateField(nameField, data.display_name);
             }
           } catch (e) {
             console.error('Adres çözümlenemedi:', e);
