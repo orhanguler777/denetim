@@ -80,9 +80,14 @@ export default function Notes() {
           {filteredNotes.map(note => (
             <div key={note.id} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-all flex flex-col">
               <div className="flex justify-between items-start mb-3">
-                <span className="inline-block px-2.5 py-1 rounded-lg text-xs font-semibold bg-yellow-100 text-yellow-800">
-                  Not
-                </span>
+                <div className="flex gap-2">
+                  <span className={`inline-block px-2.5 py-1 rounded-lg text-xs font-semibold ${note.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
+                    {note.status === 'completed' ? 'Tamamlandı' : 'Taslak'}
+                  </span>
+                  <span className="inline-block px-2.5 py-1 rounded-lg text-xs font-semibold bg-yellow-100 text-yellow-800">
+                    Not
+                  </span>
+                </div>
                 <span className="text-xs text-gray-400 font-medium flex items-center gap-1">
                   <Calendar size={14} />
                   {new Date(note.createdAt).toLocaleDateString('tr-TR')} {new Date(note.createdAt).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
@@ -93,10 +98,20 @@ export default function Notes() {
                 {note.text}
               </p>
 
-              <div className="flex items-center justify-end pt-3 border-t border-gray-100 mt-auto">
+              <div className="flex items-center gap-2 pt-3 border-t border-gray-100 mt-auto">
+                <Link
+                  to={`/notes/new?id=${note.id}`}
+                  className={`flex-1 font-medium py-2 rounded-xl text-center text-sm transition-colors ${
+                    note.status === 'draft' 
+                      ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {note.status === 'draft' ? 'Kaldığın Yerden Devam Et' : 'Görüntüle / Düzenle'}
+                </Link>
                 <button
                   onClick={(e) => handleDelete(note.id, e)}
-                  className="p-2 text-red-500 bg-red-50 hover:bg-red-100 rounded-xl transition-colors"
+                  className="p-2 text-red-500 bg-red-50 hover:bg-red-100 rounded-xl transition-colors shrink-0"
                   title="Sil"
                 >
                   <Trash2 size={20} />
