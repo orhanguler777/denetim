@@ -18,8 +18,11 @@
 @layer base {
   body {
     @apply bg-[var(--color-bg-base)] text-[var(--color-text-main)] font-sans antialiased;
-    /* Prevent zoom on inputs in iOS */
+    /* Prevent zoom on inputs in iOS and Android */
     touch-action: pan-x pan-y;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
   }
 
   input, textarea, select {
