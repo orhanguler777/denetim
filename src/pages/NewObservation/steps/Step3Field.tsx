@@ -36,7 +36,18 @@ export default function Step3Field() {
           }
         },
         (error) => {
-          alert('Konum alınamadı: ' + error.message);
+          if (error.code === error.PERMISSION_DENIED) {
+            alert('Konum izni reddedildi. Lütfen tarayıcı/cihaz ayarlarından konum izni verin veya adresi elle yazın.');
+          } else if (error.code === error.TIMEOUT) {
+            alert('Konum bulunurken zaman aşımına uğradı. Lütfen tekrar deneyin.');
+          } else {
+            alert('Konum alınamadı: ' + error.message);
+          }
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 10000
         }
       );
     } else {
