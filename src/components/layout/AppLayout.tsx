@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, ClipboardList, AlertTriangle, Lightbulb, Plus } from 'lucide-react';
+import { Home, ClipboardList, AlertTriangle, Lightbulb, Plus, Mic } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 interface AppLayoutProps {
@@ -13,6 +13,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
     { path: '/', icon: Home, label: 'Ana Sayfa' },
     { path: '/observations', icon: ClipboardList, label: 'Gözlemler' },
     { path: '/new', icon: Plus, label: 'Yeni', special: true },
+    { path: '/notes', icon: Mic, label: 'Notlar' },
     { path: '/problems', icon: AlertTriangle, label: 'Problemler' },
     { path: '/opportunities', icon: Lightbulb, label: 'Fırsatlar' },
     { path: '/end-of-day', icon: Home, label: 'Gün Sonu', isDesktopOnly: true },
@@ -27,26 +28,27 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar for Desktop */}
-        <aside className="w-64 bg-white shadow-md hidden md:flex flex-col z-10">
-          <div className="p-4 border-b border-gray-100">
-            <Link to="/new" className="flex items-center justify-center gap-2 bg-blue-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-blue-700 transition-colors">
+        <aside className="w-20 lg:w-64 bg-white shadow-md hidden md:flex flex-col z-10 transition-all duration-300">
+          <div className="p-4 border-b border-gray-100 flex justify-center lg:justify-start">
+            <Link to="/new" className="flex items-center justify-center gap-2 bg-blue-600 text-white p-3 lg:px-4 rounded-xl font-medium hover:bg-blue-700 transition-colors w-full">
               <Plus size={20} />
-              Yeni Denetim
+              <span className="hidden lg:inline">Yeni Denetim</span>
             </Link>
           </div>
-          <nav className="flex-1 p-4 space-y-2">
+          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
             {navItems.filter(i => !i.special).map((item) => {
-              const isActive = location.pathname === item.path;
+              const isActive = location.pathname.startsWith(item.path) && (item.path !== '/' || location.pathname === '/');
               return (
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  title={item.label}
+                  className={`flex items-center justify-center lg:justify-start gap-3 p-3 lg:px-4 lg:py-3 rounded-lg transition-colors ${
                     isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
-                  <item.icon size={20} className={isActive ? 'text-blue-600' : 'text-gray-500'} />
-                  {item.label}
+                  <item.icon size={22} className={isActive ? 'text-blue-600' : 'text-gray-500'} />
+                  <span className="hidden lg:inline">{item.label}</span>
                 </Link>
               );
             })}

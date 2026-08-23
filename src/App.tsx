@@ -9,6 +9,8 @@ import Problems from './pages/Problems';
 import Opportunities from './pages/Opportunities';
 import NewObservation from './pages/NewObservation';
 import EndOfDay from './pages/EndOfDay';
+import Notes from './pages/Notes';
+import NewNote from './pages/Notes/NewNote';
 
 function App() {
   useEffect(() => {
@@ -24,6 +26,8 @@ function App() {
           <Route path="/observations" element={<Observations />} />
           <Route path="/problems" element={<Problems />} />
           <Route path="/opportunities" element={<Opportunities />} />
+          <Route path="/notes" element={<Notes />} />
+          <Route path="/notes/new" element={<NewNote />} />
           <Route path="/end-of-day" element={<EndOfDay />} />
           <Route path="/new/*" element={<NewObservation />} />
         </Routes>

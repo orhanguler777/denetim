@@ -107,3 +107,9 @@ export interface Observation {
   // Genel notlar
   notes?: string;
 }
+
+export interface Note {
+  id: string;
+  text: string;
+  createdAt: string;
+}
