@@ -98,24 +98,8 @@ export const useDraftStore = create<DraftState>((set, get) => ({
       const statusToSave = isDraft ? 'draft' : 'completed';
       const draft = { ...currentDraft, status: statusToSave, updatedAt: now };
 
-      const { error: obsError } = await supabase.from('observations').upsert({
-        id: draft.id,
-        date: draft.date,
-        time: draft.time,
-        team: draft.team,
-        departureLocation: draft.departureLocation,
-        departureCoordinates: draft.departureCoordinates,
-        location: draft.location,
-        locationCoordinates: draft.locationCoordinates,
-        taskType: draft.taskType,
-        otherFields: draft.otherFields,
-        status: draft.status,
-        notes: draft.notes,
-        createdAt: draft.createdAt,
-        updatedAt: draft.updatedAt,
-        taskInformation: draft.taskInformation,
-        inspectionChecklist: draft.inspectionChecklist
-      });
+      const { complaintData, problems, opportunities, ...obsToSave } = draft as any;
+      const { error: obsError } = await supabase.from('observations').upsert(obsToSave);
 
       if (obsError) {
         console.error('Error saving observation:', obsError);
