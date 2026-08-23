@@ -102,9 +102,13 @@ export default function Observations() {
               <div className="flex items-center gap-2 pt-3 border-t border-gray-100 mt-auto">
                 <Link
                   to={`/new?id=${obs.id}`}
-                  className="flex-1 bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium py-2 rounded-xl text-center text-sm transition-colors"
+                  className={`flex-1 font-medium py-2 rounded-xl text-center text-sm transition-colors ${
+                    obs.status === 'draft' 
+                      ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
                 >
-                  Görüntüle / Düzenle
+                  {obs.status === 'draft' ? 'Kaldığın Yerden Devam Et' : 'Görüntüle'}
                 </Link>
                 <button
                   onClick={(e) => handleDelete(obs.id, e)}

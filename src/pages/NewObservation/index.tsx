@@ -88,9 +88,19 @@ export default function NewObservationWizard() {
       </div>
 
       {/* Sticky Bottom Actions */}
-      <div className="fixed md:absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 pb-safe flex justify-end z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <Button onClick={handleSave} variant="primary" className="w-full md:w-auto md:px-12 bg-green-600 hover:bg-green-700 h-14 text-lg shadow-lg">
-          <Save size={24} className="mr-2" />
+      <div className="fixed md:absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 pb-safe flex gap-3 justify-end z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <Button 
+          onClick={async () => {
+            await saveDraftToDB(true);
+            navigate('/observations');
+          }} 
+          variant="secondary" 
+          className="w-full md:w-auto md:px-8 h-14 text-sm md:text-base font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200"
+        >
+          Taslak Kaydet ve Çık
+        </Button>
+        <Button onClick={handleSave} variant="primary" className="w-full md:w-auto md:px-12 bg-green-600 hover:bg-green-700 h-14 text-sm md:text-lg shadow-lg shrink-0">
+          <Save size={24} className="mr-2 hidden md:block" />
           KAYDET VE TAMAMLA
         </Button>
       </div>

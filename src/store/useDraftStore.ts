@@ -21,7 +21,7 @@ interface DraftState {
   startNew: (draft?: Partial<Observation>) => void;
   updateField: <K extends keyof Observation>(key: K, value: Observation[K]) => void;
   updateOtherField: (fieldKey: string, value: string) => void;
-  saveDraftToDB: () => Promise<void>;
+  saveDraftToDB: (isDraft?: boolean) => Promise<void>;
   clearDraft: () => void;
 }
 
@@ -91,11 +91,12 @@ export const useDraftStore = create<DraftState>((set, get) => ({
     });
   },
 
-  saveDraftToDB: async () => {
+  saveDraftToDB: async (isDraft = false) => {
     const { currentDraft } = get();
     if (currentDraft && currentDraft.id) {
       const now = new Date().toISOString();
-      const draft = { ...currentDraft, status: 'completed', updatedAt: now };
+      const statusToSave = isDraft ? 'draft' : 'completed';
+      const draft = { ...currentDraft, status: statusToSave, updatedAt: now };
 
       const { error: obsError } = await supabase.from('observations').upsert({
         id: draft.id,
