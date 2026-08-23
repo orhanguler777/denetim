@@ -1,30 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
-import type { Observation } from '../types';
+import React, { useState } from 'react';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { db } from '../db/db';
 import { Link } from 'react-router-dom';
 import { ClipboardList, Trash2, Calendar, MapPin, Search } from 'lucide-react';
 import { Input } from '../components/ui/Input';
 
 export default function Observations() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [observations, setObservations] = useState<Observation[]>([]);
-  const [loading, setLoading] = useState(true);
+  const observations = useLiveQuery(() => db.observations.toArray()) || [];
 
-  useEffect(() => {
-    const fetchObs = async () => {
-      const { data, error } = await supabase
-        .from('observations')
-        .select('*')
-        .order('createdAt', { ascending: false });
-      
-      if (!error && data) {
-        setObservations(data as Observation[]);
-      }
-      setLoading(false);
-    };
-    fetchObs();
-  }, []);
-  
   const filteredObservations = observations.filter(obs => {
     const searchLower = searchTerm.toLowerCase();
     return (
@@ -32,17 +16,17 @@ export default function Observations() {
       (obs.team || '').toLowerCase().includes(searchLower) ||
       (obs.taskType || '').toLowerCase().includes(searchLower)
     );
-  });
+  }).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {
     e.preventDefault();
     if (confirm('Bu gözlemi tamamen silmek istediğinize emin misiniz?')) {
-      const { error } = await supabase.from('observations').delete().eq('id', id);
-      if (!error) {
-        setObservations(prev => prev.filter(o => o.id !== id));
-      } else {
-        alert('Silinirken hata oluştu: ' + error.message);
-      }
+      await db.observations.delete(id);
+      // also delete associated data
+      await db.complaints.where('observationId').equals(id).delete();
+      await db.problems.where('observationId').equals(id).delete();
+      await db.opportunities.where('observationId').equals(id).delete();
+      await db.photos.where('observationId').equals(id).delete();
     }
   };
 
@@ -57,8 +41,8 @@ export default function Observations() {
 
       <div className="relative">
         <Search className="absolute left-4 top-4 text-gray-400" size={20} />
-        <Input 
-          placeholder="Konum, ekip veya denetim türü ara..." 
+        <Input
+          placeholder="Konum, ekip veya denetim türü ara..."
           className="pl-12"
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
@@ -74,18 +58,17 @@ export default function Observations() {
           {filteredObservations.map(obs => (
             <div key={obs.id} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-all flex flex-col">
               <div className="flex justify-between items-start mb-3">
-                <span className={`inline-block px-2.5 py-1 rounded-lg text-xs font-semibold ${
-                  obs.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
-                }`}>
+                <span className={`inline-block px-2.5 py-1 rounded-lg text-xs font-semibold ${obs.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                  }`}>
                   {obs.status === 'completed' ? 'Tamamlandı' : 'Taslak'}
                 </span>
                 <span className="text-xs text-gray-400 font-medium">
-                  {new Date(obs.createdAt).toLocaleDateString('tr-TR')} - {new Date(obs.createdAt).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                  {new Date(obs.createdAt).toLocaleDateString('tr-TR')}
                 </span>
               </div>
-              
+
               <h3 className="font-bold text-gray-900 mb-3 text-lg line-clamp-1">{obs.taskType || 'Belirtilmemiş Görev'}</h3>
-              
+
               <div className="space-y-2.5 text-sm text-gray-600 mb-5 flex-1">
                 <div className="flex items-center gap-2">
                   <Calendar size={16} className="text-gray-400 shrink-0" />
@@ -102,14 +85,14 @@ export default function Observations() {
               </div>
 
               <div className="flex items-center gap-2 pt-3 border-t border-gray-100 mt-auto">
-                <Link 
-                  to={`/new?id=${obs.id}`} 
+                <Link
+                  to={`/new?id=${obs.id}`}
                   className="flex-1 bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium py-2 rounded-xl text-center text-sm transition-colors"
                 >
                   Görüntüle / Düzenle
                 </Link>
-                <button 
-                  onClick={(e) => handleDelete(obs.id, e)} 
+                <button
+                  onClick={(e) => handleDelete(obs.id, e)}
                   className="p-2 text-red-500 bg-red-50 hover:bg-red-100 rounded-xl transition-colors shrink-0"
                   title="Sil"
                 >

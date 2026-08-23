@@ -38,14 +38,13 @@ export default function Step5Evidence() {
       updateField('hasPhotos', true);
       setPhotoAdded(true);
       setTimeout(() => setPhotoAdded(false), 3000);
-      
-      // Store to Draft state instead of Dexie
-      const newPhoto = {
+
+      // Store to DB (Demo)
+      await db.photos.add({
         id: crypto.randomUUID(),
+        observationId: currentDraft.id,
         timestamp: new Date().toISOString(),
-      };
-      const currentPhotos = currentDraft.photos || [];
-      updateField('photos', [...currentPhotos, newPhoto]);
+      });
     }
   };
 
@@ -58,11 +57,11 @@ export default function Step5Evidence() {
 
       <div className="bg-blue-50 border-2 border-blue-100 rounded-2xl p-6 text-center space-y-4">
         <div className="text-blue-800 font-medium">Saha uygulamasından fotoğraf çekimi testi:</div>
-        <input 
-          type="file" 
-          accept="image/*" 
-          capture="environment" 
-          className="hidden" 
+        <input
+          type="file"
+          accept="image/*"
+          capture="environment"
+          className="hidden"
           ref={fileInputRef}
           onChange={handlePhotoCapture}
         />

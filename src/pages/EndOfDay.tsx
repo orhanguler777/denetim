@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db/db';
 import { ClipboardList, AlertTriangle, Lightbulb, Clock, CheckCircle } from 'lucide-react';

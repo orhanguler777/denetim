@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Home, ClipboardList, AlertTriangle, Lightbulb, Plus } from 'lucide-react';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface AppLayoutProps {
   children: ReactNode;

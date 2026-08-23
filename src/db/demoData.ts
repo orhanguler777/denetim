@@ -1,5 +1,4 @@
 import { db } from './db';
-import type { Observation, Complaint, Problem, DigitalizationOpportunity } from '../types';
 
 export const loadDemoData = async () => {
   const count = await db.observations.count();

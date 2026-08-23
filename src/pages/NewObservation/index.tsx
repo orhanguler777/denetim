@@ -21,15 +21,11 @@ export default function NewObservationWizard() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const draftId = searchParams.get('id');
-  
+
   const { currentDraft, loadDraft, startNew, saveDraftToDB, updateField } = useDraftStore();
   const [isReady, setIsReady] = useState(false);
-  const hasInitialized = React.useRef(false);
 
   useEffect(() => {
-    if (hasInitialized.current) return;
-    hasInitialized.current = true;
-
     const init = async () => {
       if (draftId) {
         await loadDraft(draftId);
@@ -82,7 +78,7 @@ export default function NewObservationWizard() {
             <h2 className="text-2xl font-bold text-gray-900">Genel Notlar</h2>
             <p className="text-gray-500">Denetimle ilgili eklemek istediğiniz diğer tüm detayları buraya yazabilirsiniz.</p>
           </div>
-          <Textarea 
+          <Textarea
             placeholder="Notlarınızı buraya yazın..."
             rows={6}
             value={currentDraft.notes || ''}

@@ -58,27 +58,27 @@ export interface Observation {
   taskDeliveryMethod?: string;
   taskInformation: string[];
   dispatchDuration: number;
-  
+
   location?: string;
   locationCoordinates?: { lat: number; lng: number };
   arrivalMethod?: string;
   arrivalProblem?: boolean;
   arrivalProblemDescription?: string;
   arrivalProblemTimeLoss?: number;
-  
+
   firstAction?: string;
   checkedInfo?: string[];
   infoLocation?: string;
   inspectionChecklist: string[];
   customChecklistItems?: string[];
-  
+
   hasPhotos?: boolean;
   photoCount?: number;
   photosWhereSaved?: string;
   photoProcessMatching?: string;
   photoLocationImportant?: string;
   otherEvidence?: string[];
-  
+
   reportRequired?: boolean;
   reportPreparation?: string;
   reportContent?: string;
@@ -86,23 +86,22 @@ export interface Observation {
   whoSigns?: string;
   howSigned?: string;
   reportDestination?: string;
-  
+
   result?: string;
   whoApproves?: string;
   transferredToOtherDept?: boolean;
   otherDeptName?: string;
   citizenInformed?: boolean;
   howCitizenInformed?: string;
-  
+
   status: 'draft' | 'completed';
   createdAt: string;
   updatedAt: string;
 
   // Draft related fields for wizard
   complaintData?: Partial<Complaint>;
-  photos?: Photo[];
   otherFields?: Record<string, string>;
-  
+
   // Genel notlar
   notes?: string;
 }
