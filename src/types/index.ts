@@ -42,6 +42,7 @@ export interface Photo {
   timestamp: string;
   latitude?: number;
   longitude?: number;
+  fileData?: string; // base64 data URL
   fileReference?: string; // base64 or blob id
   processMatching?: string;
 }
