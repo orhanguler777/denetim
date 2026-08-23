@@ -59,7 +59,9 @@ export interface Observation {
   taskInformation: string[];
   dispatchDuration: number;
 
-  location?: string;
+  departureLocation?: string;
+  departureCoordinates?: { lat: number; lng: number };
+  location?: string; // Varış konumu
   locationCoordinates?: { lat: number; lng: number };
   arrivalMethod?: string;
   arrivalProblem?: boolean;

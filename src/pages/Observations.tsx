@@ -1,13 +1,28 @@
-import React, { useState } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '../db/db';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
+import type { Observation } from '../types';
 import { Link } from 'react-router-dom';
 import { ClipboardList, Trash2, Calendar, MapPin, Search } from 'lucide-react';
 import { Input } from '../components/ui/Input';
 
 export default function Observations() {
   const [searchTerm, setSearchTerm] = useState('');
-  const observations = useLiveQuery(() => db.observations.toArray()) || [];
+  const [observations, setObservations] = useState<Observation[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchObs = async () => {
+      const { data, error } = await supabase
+        .from('observations')
+        .select('*')
+        .order('createdAt', { ascending: false });
+      if (!error && data) {
+        setObservations(data as Observation[]);
+      }
+      setLoading(false);
+    };
+    fetchObs();
+  }, []);
 
   const filteredObservations = observations.filter(obs => {
     const searchLower = searchTerm.toLowerCase();
@@ -16,17 +31,17 @@ export default function Observations() {
       (obs.team || '').toLowerCase().includes(searchLower) ||
       (obs.taskType || '').toLowerCase().includes(searchLower)
     );
-  }).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  });
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {
     e.preventDefault();
     if (confirm('Bu gözlemi tamamen silmek istediğinize emin misiniz?')) {
-      await db.observations.delete(id);
-      // also delete associated data
-      await db.complaints.where('observationId').equals(id).delete();
-      await db.problems.where('observationId').equals(id).delete();
-      await db.opportunities.where('observationId').equals(id).delete();
-      await db.photos.where('observationId').equals(id).delete();
+      const { error } = await supabase.from('observations').delete().eq('id', id);
+      if (!error) {
+        setObservations(prev => prev.filter(o => o.id !== id));
+      } else {
+        alert('Silinirken hata oluştu: ' + error.message);
+      }
     }
   };
 

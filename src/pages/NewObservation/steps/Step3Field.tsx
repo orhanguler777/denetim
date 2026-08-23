@@ -70,7 +70,29 @@ export default function Step3Field() {
       </div>
 
       <div className="space-y-3">
-        <label className="text-sm font-medium text-gray-700 ml-1">Konum</label>
+        <label className="text-sm font-medium text-gray-700 ml-1">Çıkış Konumu</label>
+        <Input
+          placeholder="Ekibin yola çıktığı adres veya merkez"
+          value={currentDraft.departureLocation || ''}
+          onChange={(e) => updateField('departureLocation', e.target.value)}
+        />
+        <Button 
+          variant={currentDraft.departureCoordinates ? "secondary" : "outline"} 
+          className="w-full flex justify-center items-center gap-2"
+          onClick={() => handleGetLocation('departure')}
+        >
+          <MapPin size={20} className={currentDraft.departureCoordinates ? "text-green-600" : "text-gray-500"} />
+          {currentDraft.departureCoordinates ? 'Çıkış Konumu Kaydedildi (Güncelle)' : 'Mevcut GPS Konumumu Çıkış Olarak Kaydet'}
+        </Button>
+        {currentDraft.departureCoordinates && (
+          <p className="text-xs text-gray-500 text-center">
+            {currentDraft.departureCoordinates.lat.toFixed(6)}, {currentDraft.departureCoordinates.lng.toFixed(6)}
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-3 pt-4 border-t border-gray-100">
+        <label className="text-sm font-medium text-gray-700 ml-1">Varış Konumu</label>
         <Input
           placeholder="Açık adres veya mekan adı"
           value={currentDraft.location || ''}
@@ -79,10 +101,10 @@ export default function Step3Field() {
         <Button 
           variant={currentDraft.locationCoordinates ? "secondary" : "outline"} 
           className="w-full flex justify-center items-center gap-2"
-          onClick={handleGetLocation}
+          onClick={() => handleGetLocation('arrival')}
         >
           <MapPin size={20} className={currentDraft.locationCoordinates ? "text-green-600" : "text-gray-500"} />
-          {currentDraft.locationCoordinates ? 'Konum Kaydedildi (Güncelle)' : 'Mevcut GPS Konumumu Kaydet'}
+          {currentDraft.locationCoordinates ? 'Varış Konumu Kaydedildi (Güncelle)' : 'Mevcut GPS Konumumu Varış Olarak Kaydet'}
         </Button>
         {currentDraft.locationCoordinates && (
           <p className="text-xs text-gray-500 text-center">
